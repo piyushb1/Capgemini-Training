@@ -1,0 +1,106 @@
+mongoimport --host cluster0-shard-00-01.jorqq.mongodb.net:27017 --db restaurants --collection addresses --type json --file E:\capg\ADAPT\Mongodb\restaurants.json --authenticationDatabase admin --ssl --username admin1 --password admin1
+
+mongoimport <clusteraddress> --db population --collection zipcodes --type json --file C:\Users\ASUS\Downloads\zip.json --authenticationDatabase admin --ssl --username admin --password <password>
+
+
+Atlanta Population
+
+ db.zipcodes.find({city:"ATLANTA", "state" : "GA"})
+
+db.zipcodes.aggregate([{$match:{city:"ATLANTA", "state" : "GA"}}])
+
+ db.zipcodes.aggregate( [
+ {$match:{city:"ATLANTA"}}, 
+  {     $group:
+ {       
+ _id:"_id",
+        count: { $sum: 1 }     
+}   } ] )
+
+db.zipcodes.aggregate( [
+{$match:{city:"ATLANTA"}}, 
+  {
+    $group: {
+       _id:"pop",
+      totalAmount: { $sum: "$pop" },
+    }
+  }
+] )
+
+
+Populations By State
+
+db.zipcodes.aggregate([
+   { $group : { _id : "$state", totalAmount: { $sum: "$pop" } } }
+ ])
+
+db.zipcodes.aggregate([
+   { $group : { _id : "$state", totalAmount: { $sum: "$pop" } } },
+   {   $sort : { totalAmount: -1 }  }
+ ])
+
+db.zipcodes.aggregate([
+   { $group : { _id : "$state", totalAmount: { $sum: "$pop" } } },
+   {   $sort : { totalAmount: -1 }  },
+   { $limit : 3 }
+ ])
+
+
+Populations by City
+
+db.zipcodes.aggregate( [
+   { $group: { _id: { state: "$state", city: "$city" }, pop: { $sum: "$pop" } } }
+] )
+
+db.zipcodes.aggregate( [
+   { $group: { _id: { state: "$state", city: "$city" }, pop: { $sum: "$pop" } } },
+   {   $sort : { pop: -1 }  }
+] )
+
+db.zipcodes.aggregate( [
+   { $group: { _id: { state: "$state", city: "$city" }, pop: { $sum: "$pop" } } },
+   {   $sort : { pop: -1 }  },
+   { $limit : 3 }
+] )
+
+db.zipcodes.aggregate( [
+   {$match:{state:"TX"}}, 
+   { $group: { _id: { state: "$state", city: "$city" }, pop: { $sum: "$pop" } } },
+   {   $sort : { pop: -1 }  },
+   { $limit : 3 }
+] )
+
+
+Bonus
+
+db.zipcodes.aggregate( [
+   { $group: { _id: { state: "$state", city: "$city" }, avgpop: {  $avg:"$pop" } } }
+] )
+
+db.zipcodes.aggregate( [
+   { $group: { _id: { state: "$state", city: "$city" }, avgpop: {  $avg:"$pop" } } },
+   {   $sort : { avgpop: -1 }  },
+   { $limit : 3 }
+] )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
