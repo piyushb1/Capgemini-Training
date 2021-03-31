@@ -1,1 +1,1 @@
-This are Capgemini-Training Assignments
+These are Capgemini-Training Assignments
